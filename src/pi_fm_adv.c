@@ -239,7 +239,7 @@ static void *map_peripheral(uint32_t base, uint32_t len)
 
 
 
-int tx(uint32_t carrier_freq, uint32_t divider, char *audio_file, int rds, uint16_t pi, char *ps, char *rt, int *af_array, float ppm, float deviation, float mpx, float cutoff, float preemphasis_cutoff, char *control_pipe, int pty, int tp, int power) {
+int tx(uint32_t carrier_freq, uint32_t divider, char *audio_file, int rds, uint16_t pi, char *ps, char *rt, int *af_array, float ppm, float deviation, float mpx, float cutoff, float preemphasis_cutoff, char *control_pipe, int pty, int tp, int power, int ecc) {
 	// Catch only important signals
 	for (int i = 0; i < 25; i++) {
 		struct sigaction sa;
@@ -412,6 +412,7 @@ int tx(uint32_t carrier_freq, uint32_t divider, char *audio_file, int rds, uint1
 	set_rds_tp(tp);
 	set_rds_ms(1);
 	set_rds_ab(0);
+	set_rds_ecc(ecc);
 	uint16_t count = 0;
 	uint16_t count2 = 0;
 	int varying_ps = 0;
@@ -422,9 +423,9 @@ int tx(uint32_t carrier_freq, uint32_t divider, char *audio_file, int rds, uint1
 		printf("RDS: %i, ", rds);
 		if(ps) {
 			set_rds_ps(ps);
-			printf("PI: %04X, PS: \"%s\", PTY: %i\n", pi, ps, pty);
+			printf("PI: %04X, ECC: %02X, PS: \"%s\", PTY: %i\n", pi, ecc, ps, pty);
 		} else {
-			printf("PI: %04X, PS: <Varying>, PTY: %i\n", pi, pty);
+			printf("PI: %04X, ECC: %02X, PS: <Varying>, PTY: %i\n", pi, ecc, pty);
 			varying_ps = 1;
 		}
 		printf("RT: \"%s\"\n", rt);
@@ -532,6 +533,7 @@ int main(int argc, char **argv) {
 	int tp = 1;
 	int divc = 0;
 	int power = 7;
+	int ecc = 0xe0
 	float mpx = 40;
 
 	const char    	*short_opt = "a:f:d:p:c:P:D:m:w:C:h";
@@ -549,6 +551,7 @@ int main(int argc, char **argv) {
 
 		{"rds", 	required_argument, NULL, 'rds'},
 		{"pi", 		required_argument, NULL, 'pi'},
+		{"ecc", 		required_argument, NULL, 'ecc'},
 		{"ps", 		required_argument, NULL, 'ps'},
 		{"rt", 		required_argument, NULL, 'rt'},
 		{"pty", 	required_argument, NULL, 'pty'},
@@ -627,6 +630,10 @@ int main(int argc, char **argv) {
 				ps = optarg;
 				break;
 
+			case 'ecc': //ecc
+				ecc = optarg;
+				break;
+				
 			case 'rt': //rt
 				rt = optarg;
 				break;
@@ -656,7 +663,7 @@ int main(int argc, char **argv) {
 				      "                  [--ppm (-p) ppm-error] [--cutoff (-c) cutoff-freq] [--preemph (-P) preemphasis]\n"
 				      "                  [--div (-D) divider] [--mpx (-m) mpx-power] [--power (-w) output-power]\n"
 				      "                  [--rds rds-switch] [--pi pi-code] [--ps ps-text] [--rt radiotext] [--tp traffic-program]\n"
-				      "                  [--pty program-type] [--af alternative-freq] [--ctl (-C) control-pipe]\n");
+				      "                  [--pty program-type] [--af alternative-freq] [--ctl (-C) control-pipe] --ecc ECC\n");
 
 				break;
 
@@ -718,7 +725,7 @@ int main(int argc, char **argv) {
 
 	printf("Carrier: %3.2f Mhz, VCO: %4.1f MHz, Multiplier: %f, Divider: %d\n", carrier_freq/1e6, (double)carrier_freq * best_divider / 1e6, carrier_freq * best_divider * xtal_freq_recip, best_divider);
 	
-	int errcode = tx(carrier_freq, best_divider, audio_file, rds, pi, ps, rt, alternative_freq, ppm, deviation, mpx, cutoff, preemphasis_cutoff, control_pipe, pty, tp, power);
+	int errcode = tx(carrier_freq, best_divider, audio_file, rds, pi, ps, rt, alternative_freq, ppm, deviation, mpx, cutoff, preemphasis_cutoff, control_pipe, pty, tp, power, ecc);
 
 	terminate(errcode);
 }

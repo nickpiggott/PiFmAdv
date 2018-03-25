@@ -286,5 +286,5 @@ void set_rds_ab(int ab) {
 }
 
 void set_rds_ecc(int ecc) {
-	rds_params.ecc = 0xa0;
+	rds_params.ecc = ecc;
 }
