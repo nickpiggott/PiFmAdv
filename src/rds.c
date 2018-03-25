@@ -26,6 +26,7 @@ struct {
     char ps[PS_LENGTH];
     char rt[RT_LENGTH];
     int af[100];
+	int ecc;
 } rds_params = { 0 };
 /* Here, the first member of the struct must be a scalar to avoid a
    warning on -Wmissing-braces with GCC < 4.8.3
@@ -134,16 +135,20 @@ void get_rds_group(int *buffer) {
             blocks[3] = rds_params.ps[ps_state*2] << 8 | rds_params.ps[ps_state*2+1];
             ps_state++;
             if(ps_state >= 4) ps_state = 0;
-        } else { // Type 2A groups
+        } else if(state < 6) { // Type 2A groups
             blocks[1] = 0x2000 | rds_params.tp << 10 | rds_params.pty << 5 | rds_params.ab | rt_state;
             blocks[2] = rds_params.rt[rt_state*4+0] << 8 | rds_params.rt[rt_state*4+1];
             blocks[3] = rds_params.rt[rt_state*4+2] << 8 | rds_params.rt[rt_state*4+3];
             rt_state++;
             if(rt_state >= 16) rt_state = 0;
-        }
+        } else { // Type 1A groups
+            blocks[1] = 0x1000 | rds_params.tp << 10 | rds_params.pty << 5;
+            blocks[2] = 0x0000 | rds_params.ecc;
+            blocks[3] = 0x0400 | rds_params.ecc;
+        } 
 
         state++;
-        if(state >= 6) state = 0;
+        if(state >= 7) state = 0;
     }
 
     // Calculate the checkword for each block and emit the bits
@@ -278,4 +283,8 @@ void set_rds_ms(int ms) {
 
 void set_rds_ab(int ab) {
 	rds_params.ab = ab;
+}
+
+void set_rds_ecc(int ecc) {
+	rds_params.ecc = 0xa0;
 }
