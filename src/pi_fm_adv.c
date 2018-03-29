@@ -533,7 +533,7 @@ int main(int argc, char **argv) {
 	int tp = 1;
 	int divc = 0;
 	int power = 7;
-	int ecc = 0xe0
+	int ecc = 0xe0;
 	float mpx = 40;
 
 	const char    	*short_opt = "a:f:d:p:c:P:D:m:w:C:h";
