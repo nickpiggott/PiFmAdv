@@ -631,7 +631,7 @@ int main(int argc, char **argv) {
 				break;
 
 			case 'ecc': //ecc
-				ecc = strtoi(optarg, NULL, 16);
+				ecc = (int) strtol(optarg, NULL, 16);
 				break;
 				
 			case 'rt': //rt
