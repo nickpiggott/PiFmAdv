@@ -663,7 +663,7 @@ int main(int argc, char **argv) {
 				      "                  [--ppm (-p) ppm-error] [--cutoff (-c) cutoff-freq] [--preemph (-P) preemphasis]\n"
 				      "                  [--div (-D) divider] [--mpx (-m) mpx-power] [--power (-w) output-power]\n"
 				      "                  [--rds rds-switch] [--pi pi-code] [--ps ps-text] [--rt radiotext] [--tp traffic-program]\n"
-				      "                  [--pty program-type] [--af alternative-freq] [--ctl (-C) control-pipe] --ecc ECC\n");
+				      "                  [--pty program-type] [--af alternative-freq] [--ctl (-C) control-pipe] [--ecc ECC]\n");
 
 				break;
 
