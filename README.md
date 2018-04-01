@@ -66,6 +66,7 @@ All arguments are optional:
 * `--freq` specifies the carrier frequency (in MHz). Example: `--freq 107.9`.
 * `--audio` specifies an audio file to play as audio. The sample rate does not matter: PiFmAdv will resample and filter it. If a stereo file is provided, PiFmAdv will produce an FM-Stereo signal. Example: `--audio sound.wav`. The supported formats depend on `libsndfile`. This includes WAV and Ogg/Vorbis (among others) but not MP3. Specify `-` as the file name to read audio data on standard input (useful for piping audio into PiFmAdv, see below).
 * `--pi` specifies the PI-code of the RDS broadcast. 4 hexadecimal digits. Example: `--pi FFFF`.
+* `--ecc` specifies the ECC-code of the RDS broadcast. 2 hexadecimal digits. Example: `--ecc E1`.
 * `--ps` specifies the station name (Program Service name, PS) of the RDS broadcast. Limit: 8 characters. Example: `--ps RASP-PI`.
 * `--rt` specifies the radiotext (RT) to be transmitted. Limit: 64 characters. Example:  `--rt 'Hello, world!'`.
 * `--af` specifies alternative frequencies (AF). Example:  `--af 107.9 --af 99.2`.
@@ -199,6 +200,7 @@ The samples are played by `pi_fm_adv.c` that is adapted from Richard Hirst's [Pi
 
 ## History
 
+* 2018-04-01: support for ECC code
 * 2015-09-05: support for the Raspberry Pi 2
 * 2014-11-01: support for toggling the Traffic Announcement (TA) flag at run-time
 * 2014-10-19: bugfix (cleanly stop the DMA engine when the specified file does not exist, or it's not possible to read from stdin)
