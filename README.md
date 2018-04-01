@@ -178,7 +178,7 @@ CPU usage increases dramatically when adding audio because the program has to up
 
 The RDS data generator lies in the `rds.c` file.
 
-The RDS data generator generates cyclically four 0A groups (for transmitting PS), and one 2A group (for transmitting RT). In addition, every minute, it inserts a 4A group (for transmitting CT, clock time). `get_rds_group` generates one group, and uses `crc` for computing the CRC.
+The RDS data generator generates cyclically four 0A groups (for transmitting PS), one 2A group (for transmitting RT), one 1A group (for transmitting ECC) and one 1B group (for transmitting the PI). In addition, every minute, it inserts a 4A group (for transmitting CT, clock time). `get_rds_group` generates one group, and uses `crc` for computing the CRC.
 
 To get samples of RDS data, call `get_rds_samples`. It calls `get_rds_group`, differentially encodes the signal and generates a shaped biphase symbol. Successive biphase symbols overlap: the samples are added so that the result is equivalent to applying the shaping filter (a [root-raised-cosine (RRC) filter ](http://en.wikipedia.org/wiki/Root-raised-cosine_filter) specified in the RDS standard) to a sequence of Manchester-encoded pulses.
 
