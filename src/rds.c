@@ -46,8 +46,9 @@ struct {
 #define FILTER_SIZE (sizeof(waveform_biphase)/sizeof(float))
 #define SAMPLE_BUFFER_SIZE (SAMPLES_PER_BIT + FILTER_SIZE)
 
-uint16_t offset_words[] = {0x0FC, 0x198, 0x168, 0x1B4};
-// We don't handle offset word C' here for the sake of simplicity
+uint16_t offset_words_a[] = {0x0FC, 0x198, 0x168, 0x1B4};
+uint16_t offset_words_b[] = {0x0FC, 0x198, 0x350, 0x1B4};
+// Type A and Type B Group offset words - only differs by C and C'
 
 /* Classical CRC computation */
 uint16_t crc(uint16_t block) {
@@ -158,7 +159,13 @@ void get_rds_group(int *buffer) {
     // Calculate the checkword for each block and emit the bits
     for(int i=0; i<GROUP_LENGTH; i++) {
         uint16_t block = blocks[i];
-        uint16_t check = crc(block) ^ offset_words[i];
+		if ((block & 0x800) =0) // Determine block type A or B
+		{
+			uint16_t check = crc(block) ^ offset_words_a[i];
+		} else {
+        		uint16_t check = crc(block) ^ offset_words_b[i];
+		}
+		
         for(int j=0; j<BLOCK_SIZE; j++) {
             *buffer++ = ((block & (1<<(BLOCK_SIZE-1))) != 0);
             block <<= 1;
