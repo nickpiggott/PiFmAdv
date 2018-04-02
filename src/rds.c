@@ -113,6 +113,7 @@ void get_rds_group(int *buffer) {
     static int ps_state = 0;
     static int rt_state = 0;
     static int af_state = 0;
+    int	group_type = 0;
     uint16_t blocks[GROUP_LENGTH] = {rds_params.pi, 0, 0, 0};
 
     // Generate block content
@@ -159,11 +160,13 @@ void get_rds_group(int *buffer) {
     // Calculate the checkword for each block and emit the bits
     for(int i=0; i<GROUP_LENGTH; i++) {
         uint16_t block = blocks[i];
-		if ((block & 0x800) =0) // Determine block type A or B
+	uint16_t check = 0;
+		group_type = (block & 0x800) >> 11;
+		if (!group_type) // Determine block type A or B
 		{
-			uint16_t check = crc(block) ^ offset_words_a[i];
+			check = crc(block) ^ offset_words_a[i];
 		} else {
-        		uint16_t check = crc(block) ^ offset_words_b[i];
+        		check = crc(block) ^ offset_words_b[i];
 		}
 		
         for(int j=0; j<BLOCK_SIZE; j++) {
