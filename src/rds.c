@@ -147,7 +147,7 @@ void get_rds_group(int *buffer) {
             blocks[2] = 0x0000 | rds_params.ecc;
             blocks[3] = 0x0000;
         } else { //Type 1B Groups
-			blocks[1] = 0x1800 | rds_params.tp << 10 | rds_params.pty << 5;
+            blocks[1] = 0x1800 | rds_params.tp << 10 | rds_params.pty << 5;
             blocks[2] = 0x0000 | rds_params.pi;
             blocks[3] = 0x0000;
 		}
@@ -157,18 +157,22 @@ void get_rds_group(int *buffer) {
     }
 
     // Calculate the checkword for each block and emit the bits
+	int group_type = (blocks[1] & 0x800) >> 11;
+	printf("New Group Type : %X \n",group_type);
+
     for(int i=0; i<GROUP_LENGTH; i++) {
         uint16_t block = blocks[i];
 	uint16_t check = 0;
-	int group_type = (block & 0x800) >> 11;
 
-		if (group_type==0) // Determine block type A or B
+		if (group_type==0) // Determine group type A or B
 		{
 			check = crc(block) ^ offset_words_a[i];
+			printf("Doing a Type A block %X \n",block);
 		} else {
         		check = crc(block) ^ offset_words_b[i];
+			printf("Doing a Type B block %X \n",block);
 		}
-		
+
         for(int j=0; j<BLOCK_SIZE; j++) {
             *buffer++ = ((block & (1<<(BLOCK_SIZE-1))) != 0);
             block <<= 1;
