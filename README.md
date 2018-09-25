@@ -32,7 +32,7 @@ PiFmAdv also depends on the Linux `rpi-mailbox` driver, so you need a recent Lin
 Clone the source repository and run `make` in the `src` directory:
 
 ```bash
-git clone https://github.com/Miegl/PiFmAdv.git
+git clone https://github.com/nickpiggott/PiFmAdv.git
 cd PiFmAdv/src
 make clean
 make
